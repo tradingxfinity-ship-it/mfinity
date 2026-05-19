@@ -251,7 +251,7 @@ export default function TradePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Chart */}
-        <div className="lg:col-span-7 bg-gradient-to-br from-[#13131F] to-[#0F0F1A] border border-[#1E1E2E] rounded-2xl overflow-hidden">
+        <div className="lg:col-span-7 bg-gradient-to-br from-[#13131F] to-[#0F0F1A] border border-[#1E1E2E] rounded-2xl overflow-hidden flex flex-col">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#1E1E2E]">
             <div className="flex items-center gap-2">
               <BarChart2 size={14} className="text-blue-400" />
@@ -272,18 +272,20 @@ export default function TradePage() {
               ))}
             </div>
           </div>
-          <div className="p-2">
+          <div className="flex-1 p-2">
             <TradingChart key={`${symbol.id}-${interval}`} symbol={symbol.id} interval={interval} height={560} />
           </div>
         </div>
 
         {/* Order book */}
-        <div className="lg:col-span-2 bg-gradient-to-br from-[#13131F] to-[#0F0F1A] border border-[#1E1E2E] rounded-2xl overflow-hidden">
-          <div className="px-3 py-3 border-b border-[#1E1E2E] flex items-center gap-2">
+        <div className="lg:col-span-2 bg-gradient-to-br from-[#13131F] to-[#0F0F1A] border border-[#1E1E2E] rounded-2xl overflow-hidden flex flex-col">
+          <div className="px-3 py-3 border-b border-[#1E1E2E] flex items-center gap-2 shrink-0">
             <Activity size={13} className="text-blue-400" />
             <span className="text-sm text-white font-bold">Order Book</span>
           </div>
-          <OrderBook symbol={symbol.display} basePrice={ticker?.price ?? null} />
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <OrderBook symbol={symbol.display} basePrice={ticker?.price ?? null} />
+          </div>
         </div>
 
         {/* Trade form */}

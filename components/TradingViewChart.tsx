@@ -19,14 +19,14 @@ const INTERVAL_MAP: Record<string, string> = {
   "1d": "D",
 };
 
-function TradingViewChart({ symbol, interval = "1m", height = 480 }: TradingViewChartProps) {
+function TradingViewChart({ symbol, interval = "1m", height = 560 }: TradingViewChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Reset container for a fresh widget
+    // Fresh widget mount point that fills the container
     container.innerHTML =
       '<div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>';
 
@@ -35,8 +35,10 @@ function TradingViewChart({ symbol, interval = "1m", height = 480 }: TradingView
       "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
     script.type = "text/javascript";
     script.async = true;
+    // Explicit width/height — autosize is unreliable inside flex/grid panels
     script.innerHTML = JSON.stringify({
-      autosize: true,
+      width: "100%",
+      height: height,
       symbol: `BINANCE:${symbol}`,
       interval: INTERVAL_MAP[interval] ?? "1",
       timezone: "Etc/UTC",
@@ -59,7 +61,7 @@ function TradingViewChart({ symbol, interval = "1m", height = 480 }: TradingView
     return () => {
       container.innerHTML = "";
     };
-  }, [symbol, interval]);
+  }, [symbol, interval, height]);
 
   return (
     <div
