@@ -60,10 +60,16 @@ export default function Navbar() {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
             <a
-              href="#cta"
+              href="/login"
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              Sign in
+            </a>
+            <a
+              href="/signup"
               className="text-sm font-semibold px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/20"
             >
-              Coming Soon
+              Get Started
             </a>
           </div>
 
@@ -98,11 +104,18 @@ export default function Navbar() {
             ))}
             <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-[#1E1E2E]">
               <a
-                href="#cta"
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                className="text-center text-sm font-medium py-2.5 px-4 rounded-lg border border-[#1E1E2E] text-gray-300 hover:bg-white/5"
+              >
+                Sign in
+              </a>
+              <a
+                href="/signup"
                 onClick={() => setMobileOpen(false)}
                 className="text-center text-sm font-semibold py-2.5 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white"
               >
-                Coming Soon
+                Get Started
               </a>
             </div>
           </div>

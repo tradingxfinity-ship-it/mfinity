@@ -27,8 +27,9 @@ export default function CTA() {
           {/* Top gradient border */}
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
-          <span className="relative inline-block text-xs font-semibold text-blue-400 uppercase tracking-widest mb-6 px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10">
-            Coming Soon
+          <span className="relative inline-block text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-6 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse" />
+            Live Now
           </span>
 
           <h2 className="relative text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-6 leading-tight">
@@ -55,17 +56,17 @@ export default function CTA() {
           {/* CTA Buttons */}
           <div className="relative flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="#"
+              href="/signup"
               className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold text-base shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105 transition-all duration-300"
             >
               Create Free Account
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
             <a
-              href="#"
+              href="/login"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl border border-[#1E1E2E] bg-white/5 text-white font-semibold text-base hover:border-blue-500/40 hover:bg-white/10 transition-all duration-300"
             >
-              Contact Us
+              Sign In
             </a>
           </div>
         </div>
