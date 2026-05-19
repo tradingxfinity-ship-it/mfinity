@@ -114,3 +114,45 @@ body {
   transform-origin: bottom;
   animation: growUp 1s ease-out forwards;
 }
+
+/* ─── Auth page animated gradient background ─────────────────────────────── */
+@keyframes auroraDrift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(8vw, 6vh) scale(1.15); }
+  66%      { transform: translate(-6vw, 10vh) scale(0.92); }
+}
+@keyframes auroraDrift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-10vw, -8vh) scale(1.1); }
+  66%      { transform: translate(7vw, -5vh) scale(0.95); }
+}
+@keyframes auroraDrift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-8vw, 8vh) scale(1.2); }
+}
+@keyframes gridPan {
+  from { background-position: 0 0; }
+  to   { background-position: 60px 60px; }
+}
+
+.aurora-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  will-change: transform;
+}
+.aurora-orb-1 { animation: auroraDrift1 22s ease-in-out infinite; }
+.aurora-orb-2 { animation: auroraDrift2 26s ease-in-out infinite; }
+.aurora-orb-3 { animation: auroraDrift3 30s ease-in-out infinite; }
+
+.auth-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridPan 18s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-orb-1, .aurora-orb-2, .aurora-orb-3, .auth-grid { animation: none; }
+}
