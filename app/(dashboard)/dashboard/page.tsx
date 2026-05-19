@@ -168,12 +168,25 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("welcome") === "true") {
+    const fromSignup = params.get("welcome") === "true";
+    const alreadySeen = localStorage.getItem("mfinity_welcome_seen");
+
+    // Show the welcome popup on signup, or the first time a user reaches the
+    // dashboard on this browser (gives testers the full experience on login).
+    if (fromSignup || !alreadySeen) {
       setShowWelcome(true);
-      // Clean the URL so the popup doesn't reappear on refresh
+    }
+    if (fromSignup) {
       window.history.replaceState({}, "", "/dashboard");
     }
   }, []);
+
+  function dismissWelcome() {
+    setShowWelcome(false);
+    try {
+      localStorage.setItem("mfinity_welcome_seen", "1");
+    } catch {}
+  }
 
   if (loading) {
     return (
@@ -223,7 +236,7 @@ export default function DashboardPage() {
               </p>
 
               <button
-                onClick={() => setShowWelcome(false)}
+                onClick={dismissWelcome}
                 className="mt-6 w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl py-3 text-sm font-bold hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/20"
               >
                 Start Trading
