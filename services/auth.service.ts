@@ -38,11 +38,17 @@ export const AuthService = {
     const verifyToken = await createVerificationToken(user.id);
     const verifyUrl = `${APP_URL}/verify-email?token=${verifyToken}`;
 
-    await sendEmail({
-      to: user.email,
-      subject: "Welcome to Mfinity — Verify your email",
-      html: welcomeEmail(user.firstName, verifyUrl),
-    });
+    // Email send is best-effort — a failure (e.g. unverified domain) must not
+    // block account creation.
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: "Welcome to Mfinity — Verify your email",
+        html: welcomeEmail(user.firstName, verifyUrl),
+      });
+    } catch (err) {
+      console.error("Welcome email failed (non-fatal):", err);
+    }
 
     const session = await db.session.create({
       data: {

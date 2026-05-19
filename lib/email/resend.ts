@@ -19,20 +19,38 @@ interface SendEmailOptions {
   replyTo?: string;
 }
 
-export async function sendEmail(options: SendEmailOptions): Promise<{ id: string }> {
-  const resend = getResend();
-  const { data, error } = await resend.emails.send({
-    from: FROM_EMAIL,
-    to: options.to,
-    subject: options.subject,
-    html: options.html,
-    text: options.text,
-    replyTo: options.replyTo,
-  });
+interface SendEmailResult {
+  id: string | null;
+  sent: boolean;
+  error?: string;
+}
 
-  if (error) {
-    throw new Error(`Failed to send email: ${error.message}`);
+/**
+ * Sends a transactional email. Non-throwing by design — email delivery is
+ * best-effort and must never block a core flow (signup, deposits, etc.).
+ * Inspect the returned `sent` flag if delivery confirmation matters.
+ */
+export async function sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {
+  try {
+    const resend = getResend();
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: options.to,
+      subject: options.subject,
+      html: options.html,
+      text: options.text,
+      replyTo: options.replyTo,
+    });
+
+    if (error) {
+      console.error("sendEmail error (non-fatal):", error.message);
+      return { id: null, sent: false, error: error.message };
+    }
+
+    return { id: data?.id ?? null, sent: true };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown email error";
+    console.error("sendEmail threw (non-fatal):", message);
+    return { id: null, sent: false, error: message };
   }
-
-  return { id: data!.id };
 }
