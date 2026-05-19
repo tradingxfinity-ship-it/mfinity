@@ -48,7 +48,7 @@ export default function SignupPage() {
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/dashboard?welcome=true");
     } catch {
       setError("Something went wrong. Try again.");
     } finally {

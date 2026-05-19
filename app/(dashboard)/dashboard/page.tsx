@@ -152,6 +152,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -163,6 +164,15 @@ export default function DashboardPage() {
         if (prof.success) setUser(prof.data);
       })
       .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("welcome") === "true") {
+      setShowWelcome(true);
+      // Clean the URL so the popup doesn't reappear on refresh
+      window.history.replaceState({}, "", "/dashboard");
+    }
   }, []);
 
   if (loading) {
@@ -184,6 +194,45 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* Welcome / demo balance popup */}
+      {showWelcome && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-md bg-gradient-to-br from-[#13131F] to-[#0F0F1A] border border-white/10 rounded-2xl p-8 text-center overflow-hidden">
+            {/* Decorative glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-blue-500/30 to-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                <Sparkles size={28} className="text-white" />
+              </div>
+
+              <h2 className="text-2xl font-bold text-white tracking-tight">Welcome to Mfinity!</h2>
+              <p className="text-gray-400 text-sm mt-2 leading-relaxed">
+                You have received
+              </p>
+
+              <div className="my-4 py-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                  $10,000
+                </p>
+                <p className="text-xs text-emerald-400/80 font-medium uppercase tracking-wider mt-1">Demo Money</p>
+              </div>
+
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Use it to test our platform — open trades, track live P&amp;L, and explore everything risk-free.
+              </p>
+
+              <button
+                onClick={() => setShowWelcome(false)}
+                className="mt-6 w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl py-3 text-sm font-bold hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/20"
+              >
+                Start Trading
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Welcome Card */}
       <div className="relative bg-gradient-to-br from-blue-600/20 via-purple-600/15 to-pink-600/10 border border-white/10 rounded-2xl p-6 overflow-hidden">
         {/* Decorative gradient blobs */}
