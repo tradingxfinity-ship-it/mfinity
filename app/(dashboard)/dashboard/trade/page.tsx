@@ -7,7 +7,7 @@ import { OrderBook } from "@/components/OrderBook";
 import { CoinIcon } from "@/components/CoinIcon";
 import { TRADING_PAIRS } from "@/lib/trading-pairs";
 
-const TradingChart = dynamic(() => import("@/components/TradingChart").then((m) => m.TradingChart), {
+const TradingChart = dynamic(() => import("@/components/TradingViewChart"), {
   ssr: false,
   loading: () => <div className="h-[480px] flex items-center justify-center text-gray-500"><Loader2 className="animate-spin" size={20} /></div>,
 });
@@ -273,7 +273,7 @@ export default function TradePage() {
             </div>
           </div>
           <div className="p-2">
-            <TradingChart key={`${symbol.id}-${interval}`} symbol={symbol.display} interval={interval} height={480} />
+            <TradingChart key={`${symbol.id}-${interval}`} symbol={symbol.id} interval={interval} height={560} />
           </div>
         </div>
 
