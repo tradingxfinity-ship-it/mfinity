@@ -78,6 +78,47 @@ export const TRADING_PAIRS: TradingPair[] = [
   { id: "BONKUSDT", display: "BONK/USDT", base: "BONK", quote: "USDT", coinId: "bonk", name: "Bonk" },
   { id: "FLOKIUSDT", display: "FLOKI/USDT", base: "FLOKI", quote: "USDT", coinId: "floki", name: "Floki" },
   { id: "WIFUSDT", display: "WIF/USDT", base: "WIF", quote: "USDT", coinId: "dogwifcoin", name: "dogwifhat" },
+
+  // Newer L1s & ecosystems
+  { id: "SEIUSDT", display: "SEI/USDT", base: "SEI", quote: "USDT", coinId: "sei-network", name: "Sei" },
+  { id: "STXUSDT", display: "STX/USDT", base: "STX", quote: "USDT", coinId: "blockstack", name: "Stacks" },
+  { id: "FLOWUSDT", display: "FLOW/USDT", base: "FLOW", quote: "USDT", coinId: "flow", name: "Flow" },
+  { id: "EGLDUSDT", display: "EGLD/USDT", base: "EGLD", quote: "USDT", coinId: "elrond-erd-2", name: "MultiversX" },
+  { id: "XTZUSDT", display: "XTZ/USDT", base: "XTZ", quote: "USDT", coinId: "tezos", name: "Tezos" },
+  { id: "MINAUSDT", display: "MINA/USDT", base: "MINA", quote: "USDT", coinId: "mina-protocol", name: "Mina" },
+  { id: "KAVAUSDT", display: "KAVA/USDT", base: "KAVA", quote: "USDT", coinId: "kava", name: "Kava" },
+  { id: "CFXUSDT", display: "CFX/USDT", base: "CFX", quote: "USDT", coinId: "conflux-token", name: "Conflux" },
+
+  // DeFi & infra
+  { id: "CRVUSDT", display: "CRV/USDT", base: "CRV", quote: "USDT", coinId: "curve-dao-token", name: "Curve" },
+  { id: "COMPUSDT", display: "COMP/USDT", base: "COMP", quote: "USDT", coinId: "compound-governance-token", name: "Compound" },
+  { id: "SNXUSDT", display: "SNX/USDT", base: "SNX", quote: "USDT", coinId: "havven", name: "Synthetix" },
+  { id: "1INCHUSDT", display: "1INCH/USDT", base: "1INCH", quote: "USDT", coinId: "1inch", name: "1inch" },
+  { id: "ENSUSDT", display: "ENS/USDT", base: "ENS", quote: "USDT", coinId: "ethereum-name-service", name: "ENS" },
+  { id: "QNTUSDT", display: "QNT/USDT", base: "QNT", quote: "USDT", coinId: "quant-network", name: "Quant" },
+  { id: "ARUSDT", display: "AR/USDT", base: "AR", quote: "USDT", coinId: "arweave", name: "Arweave" },
+  { id: "GMXUSDT", display: "GMX/USDT", base: "GMX", quote: "USDT", coinId: "gmx", name: "GMX" },
+  { id: "PENDLEUSDT", display: "PENDLE/USDT", base: "PENDLE", quote: "USDT", coinId: "pendle", name: "Pendle" },
+  { id: "CAKEUSDT", display: "CAKE/USDT", base: "CAKE", quote: "USDT", coinId: "pancakeswap-token", name: "PancakeSwap" },
+  { id: "DYDXUSDT", display: "DYDX/USDT", base: "DYDX", quote: "USDT", coinId: "dydx-chain", name: "dYdX" },
+
+  // L2s & scaling
+  { id: "STRKUSDT", display: "STRK/USDT", base: "STRK", quote: "USDT", coinId: "starknet", name: "Starknet" },
+  { id: "BLURUSDT", display: "BLUR/USDT", base: "BLUR", quote: "USDT", coinId: "blur", name: "Blur" },
+  { id: "WUSDT", display: "W/USDT", base: "W", quote: "USDT", coinId: "wormhole", name: "Wormhole" },
+
+  // Trending tokens
+  { id: "PYTHUSDT", display: "PYTH/USDT", base: "PYTH", quote: "USDT", coinId: "pyth-network", name: "Pyth Network" },
+  { id: "ENAUSDT", display: "ENA/USDT", base: "ENA", quote: "USDT", coinId: "ethena", name: "Ethena" },
+  { id: "ONDOUSDT", display: "ONDO/USDT", base: "ONDO", quote: "USDT", coinId: "ondo-finance", name: "Ondo" },
+  { id: "JTOUSDT", display: "JTO/USDT", base: "JTO", quote: "USDT", coinId: "jito-governance-token", name: "Jito" },
+  { id: "NOTUSDT", display: "NOT/USDT", base: "NOT", quote: "USDT", coinId: "notcoin", name: "Notcoin" },
+  { id: "ETHFIUSDT", display: "ETHFI/USDT", base: "ETHFI", quote: "USDT", coinId: "ether-fi", name: "Ether.fi" },
+
+  // Gaming & metaverse
+  { id: "APEUSDT", display: "APE/USDT", base: "APE", quote: "USDT", coinId: "apecoin", name: "ApeCoin" },
+  { id: "GALAUSDT", display: "GALA/USDT", base: "GALA", quote: "USDT", coinId: "gala", name: "Gala" },
+  { id: "CHZUSDT", display: "CHZ/USDT", base: "CHZ", quote: "USDT", coinId: "chiliz", name: "Chiliz" },
 ];
 
 export function getPairById(id: string): TradingPair | undefined {
