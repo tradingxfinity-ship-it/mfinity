@@ -39,7 +39,7 @@ export default function CTA() {
           </h2>
 
           <p className="relative text-lg text-gray-400 max-w-xl mx-auto mb-8">
-            Join 240,000+ traders who use Mfinity to execute faster, analyze
+            Join 5,000+ traders who use Mfinity to execute faster, analyze
             deeper, and profit consistently — starting today.
           </p>
 

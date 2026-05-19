@@ -127,7 +127,7 @@ export default function Testimonials() {
                 </div>
               ))}
             </div>
-            <span>240,000+ traders joined</span>
+            <span>5,000+ traders joined</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="flex gap-0.5">
