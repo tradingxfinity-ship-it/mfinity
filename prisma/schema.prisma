@@ -1,0 +1,532 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+  PENDING_VERIFICATION
+}
+
+enum KYCStatus {
+  NOT_STARTED
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  FEE
+  BONUS
+  ADJUSTMENT
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REJECTED
+}
+
+enum SubscriptionPlan {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  TRIALING
+  INCOMPLETE
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  TRADE
+  DEPOSIT
+  WITHDRAWAL
+  KYC
+  SYSTEM
+}
+
+enum ExchangeStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+  PENDING
+}
+
+enum PositionSide {
+  LONG
+  SHORT
+}
+
+enum PositionStatus {
+  OPEN
+  CLOSED
+  LIQUIDATED
+}
+
+enum AdminLogAction {
+  USER_SUSPENDED
+  USER_BANNED
+  USER_RESTORED
+  WITHDRAWAL_APPROVED
+  WITHDRAWAL_REJECTED
+  DEPOSIT_CONFIRMED
+  KYC_APPROVED
+  KYC_REJECTED
+  SETTINGS_UPDATED
+  BROADCAST_SENT
+  ROLE_CHANGED
+}
+
+// ─── Core User ────────────────────────────────────────────────────────────────
+
+model User {
+  id                String     @id @default(cuid())
+  email             String     @unique
+  emailVerified     DateTime?
+  passwordHash      String
+  firstName         String
+  lastName          String
+  phone             String?
+  avatarUrl         String?
+  role              UserRole   @default(USER)
+  status            UserStatus @default(PENDING_VERIFICATION)
+  kycStatus         KYCStatus  @default(NOT_STARTED)
+  twoFactorEnabled  Boolean    @default(false)
+  twoFactorSecret   String?
+  referralCode      String?    @unique
+  referredBy        String?
+  lastLoginAt       DateTime?
+  lastLoginIp       String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  sessions             Session[]
+  verificationTokens   VerificationToken[]
+  passwordResets       PasswordReset[]
+  portfolio            Portfolio?
+  positions            Position[]
+  transactions         Transaction[]
+  deposits             Deposit[]
+  withdrawals          Withdrawal[]
+  kycDocuments         KYCDocument[]
+  subscription         Subscription?
+  notifications        Notification[]
+  apiKeys              ApiKey[]
+  exchangeConnections  ExchangeConnection[]
+  watchlists           Watchlist[]
+  activityLogs         ActivityLog[]
+  adminLogsAsTarget    AdminLog[]           @relation("AdminLogTarget")
+  adminLogsAsActor     AdminLog[]           @relation("AdminLogActor")
+  stripeCustomerId     String?              @unique
+
+  @@index([email])
+  @@index([status])
+  @@index([kycStatus])
+  @@index([role])
+  @@map("users")
+}
+
+// ─── Sessions ─────────────────────────────────────────────────────────────────
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  refreshToken String   @unique
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  revokedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([refreshToken])
+  @@map("sessions")
+}
+
+// ─── Auth Tokens ──────────────────────────────────────────────────────────────
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("verification_tokens")
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("password_resets")
+}
+
+// ─── Portfolio & Positions ────────────────────────────────────────────────────
+
+model Portfolio {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  totalValue      Decimal  @default(0) @db.Decimal(18, 8)
+  totalDeposited  Decimal  @default(0) @db.Decimal(18, 8)
+  totalWithdrawn  Decimal  @default(0) @db.Decimal(18, 8)
+  totalPnl        Decimal  @default(0) @db.Decimal(18, 8)
+  totalPnlPercent Decimal  @default(0) @db.Decimal(8, 4)
+  availableBalance Decimal @default(0) @db.Decimal(18, 8)
+  lockedBalance   Decimal  @default(0) @db.Decimal(18, 8)
+  currency        String   @default("USD")
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("portfolios")
+}
+
+model Position {
+  id            String         @id @default(cuid())
+  userId        String
+  symbol        String
+  exchange      String
+  side          PositionSide
+  status        PositionStatus @default(OPEN)
+  entryPrice    Decimal        @db.Decimal(18, 8)
+  currentPrice  Decimal        @db.Decimal(18, 8)
+  closePrice    Decimal?       @db.Decimal(18, 8)
+  quantity      Decimal        @db.Decimal(18, 8)
+  leverage      Int            @default(1)
+  margin        Decimal        @db.Decimal(18, 8)
+  pnl           Decimal        @default(0) @db.Decimal(18, 8)
+  pnlPercent    Decimal        @default(0) @db.Decimal(8, 4)
+  stopLoss      Decimal?       @db.Decimal(18, 8)
+  takeProfit    Decimal?       @db.Decimal(18, 8)
+  fees          Decimal        @default(0) @db.Decimal(18, 8)
+  strategyId    String?
+  exchangeOrderId String?
+  openedAt      DateTime       @default(now())
+  closedAt      DateTime?
+  updatedAt     DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([symbol])
+  @@index([status])
+  @@map("positions")
+}
+
+// ─── Transactions ─────────────────────────────────────────────────────────────
+
+model Transaction {
+  id          String            @id @default(cuid())
+  userId      String
+  type        TransactionType
+  status      TransactionStatus @default(PENDING)
+  amount      Decimal           @db.Decimal(18, 8)
+  currency    String
+  fee         Decimal           @default(0) @db.Decimal(18, 8)
+  description String?
+  reference   String?           @unique
+  metadata    Json?
+  depositId   String?           @unique
+  withdrawalId String?          @unique
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deposit    Deposit?    @relation(fields: [depositId], references: [id])
+  withdrawal Withdrawal? @relation(fields: [withdrawalId], references: [id])
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+  @@map("transactions")
+}
+
+model Deposit {
+  id              String            @id @default(cuid())
+  userId          String
+  status          TransactionStatus @default(PENDING)
+  amount          Decimal           @db.Decimal(18, 8)
+  currency        String
+  network         String
+  walletAddress   String
+  txHash          String?           @unique
+  confirmations   Int               @default(0)
+  requiredConfs   Int               @default(3)
+  confirmedAt     DateTime?
+  adminNote       String?
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transaction Transaction?
+
+  @@index([userId])
+  @@index([status])
+  @@index([txHash])
+  @@map("deposits")
+}
+
+model Withdrawal {
+  id              String            @id @default(cuid())
+  userId          String
+  status          TransactionStatus @default(PENDING)
+  amount          Decimal           @db.Decimal(18, 8)
+  fee             Decimal           @default(0) @db.Decimal(18, 8)
+  netAmount       Decimal           @db.Decimal(18, 8)
+  currency        String
+  network         String
+  destinationAddress String
+  txHash          String?
+  adminNote       String?
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  processedAt     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transaction Transaction?
+
+  @@index([userId])
+  @@index([status])
+  @@map("withdrawals")
+}
+
+// ─── KYC ─────────────────────────────────────────────────────────────────────
+
+model KYCDocument {
+  id            String    @id @default(cuid())
+  userId        String
+  documentType  String
+  cloudinaryId  String
+  cloudinaryUrl String
+  status        KYCStatus @default(PENDING)
+  adminNote     String?
+  reviewedBy    String?
+  reviewedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@map("kyc_documents")
+}
+
+// ─── Subscriptions ────────────────────────────────────────────────────────────
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  plan                 SubscriptionPlan   @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+  stripeSubscriptionId String?            @unique
+  stripePriceId        String?
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  cancelledAt          DateTime?
+  trialEndsAt          DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+// ─── Notifications ────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType @default(INFO)
+  title     String
+  message   String
+  readAt    DateTime?
+  actionUrl String?
+  metadata  Json?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([readAt])
+  @@map("notifications")
+}
+
+// ─── Exchange Integrations ────────────────────────────────────────────────────
+
+model ApiKey {
+  id         String   @id @default(cuid())
+  userId     String
+  exchange   String
+  label      String
+  apiKey     String
+  apiSecret  String
+  passphrase String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exchangeConnection ExchangeConnection?
+
+  @@index([userId])
+  @@map("api_keys")
+}
+
+model ExchangeConnection {
+  id         String         @id @default(cuid())
+  userId     String
+  apiKeyId   String         @unique
+  exchange   String
+  status     ExchangeStatus @default(PENDING)
+  lastSyncAt DateTime?
+  errorMsg   String?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("exchange_connections")
+}
+
+// ─── Watchlists ───────────────────────────────────────────────────────────────
+
+model Watchlist {
+  id        String          @id @default(cuid())
+  userId    String
+  name      String
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  user  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items WatchlistItem[]
+
+  @@index([userId])
+  @@map("watchlists")
+}
+
+model WatchlistItem {
+  id          String   @id @default(cuid())
+  watchlistId String
+  symbol      String
+  exchange    String?
+  addedAt     DateTime @default(now())
+
+  watchlist Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+
+  @@unique([watchlistId, symbol])
+  @@map("watchlist_items")
+}
+
+// ─── Admin ────────────────────────────────────────────────────────────────────
+
+model AdminLog {
+  id         String         @id @default(cuid())
+  actorId    String
+  targetId   String?
+  action     AdminLogAction
+  details    Json?
+  ipAddress  String?
+  createdAt  DateTime       @default(now())
+
+  actor  User  @relation("AdminLogActor", fields: [actorId], references: [id])
+  target User? @relation("AdminLogTarget", fields: [targetId], references: [id])
+
+  @@index([actorId])
+  @@index([targetId])
+  @@index([createdAt])
+  @@map("admin_logs")
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  resource  String?
+  metadata  Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
+
+model Broadcast {
+  id        String   @id @default(cuid())
+  subject   String
+  body      String
+  sentBy    String
+  sentTo    String   @default("ALL")
+  sentCount Int      @default(0)
+  sentAt    DateTime @default(now())
+
+  @@map("broadcasts")
+}
+
+model PlatformSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@map("platform_settings")
+}
