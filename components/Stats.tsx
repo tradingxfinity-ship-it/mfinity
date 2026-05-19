@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 const stats = [
   { value: 5000, suffix: "+", label: "Active Traders", prefix: "" },
-  { value: 8.4, suffix: "B+", label: "Volume Traded", prefix: "$" },
+  { value: 500, suffix: "K+", label: "Volume Traded", prefix: "$" },
   { value: 99.98, suffix: "%", label: "Uptime SLA", prefix: "" },
   { value: 12, suffix: "ms", label: "Avg. Execution", prefix: "" },
 ];
