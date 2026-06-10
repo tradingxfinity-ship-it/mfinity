@@ -207,7 +207,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Welcome / demo balance popup */}
+      {/* Welcome / starter balance popup */}
       {showWelcome && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
           <div className="relative w-full max-w-md bg-gradient-to-br from-[#13131F] to-[#0F0F1A] border border-white/10 rounded-2xl p-8 text-center overflow-hidden">
@@ -228,7 +228,7 @@ export default function DashboardPage() {
                 <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
                   $10,000
                 </p>
-                <p className="text-xs text-emerald-400/80 font-medium uppercase tracking-wider mt-1">Demo Money</p>
+                <p className="text-xs text-emerald-400/80 font-medium uppercase tracking-wider mt-1">Welcome Bonus</p>
               </div>
 
               <p className="text-gray-400 text-sm leading-relaxed">

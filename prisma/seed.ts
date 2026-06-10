@@ -39,6 +39,35 @@ async function main() {
     console.log("Admin already exists, skipping.");
   }
 
+  // Test trader (paper-trading account with starter balance)
+  const traderEmail = process.env.TEST_TRADER_EMAIL ?? "trader@mfinity.trade";
+  const traderPassword = process.env.TEST_TRADER_PASSWORD ?? "Trader@123456";
+
+  const existingTrader = await db.user.findUnique({ where: { email: traderEmail } });
+
+  if (!existingTrader) {
+    const passwordHash = await bcrypt.hash(traderPassword, 12);
+
+    const trader = await db.user.create({
+      data: {
+        email: traderEmail,
+        firstName: "Test",
+        lastName: "Trader",
+        passwordHash,
+        role: "USER",
+        status: "ACTIVE",
+        emailVerified: new Date(),
+        kycStatus: "APPROVED",
+        portfolio: { create: { availableBalance: 10000, totalValue: 10000 } },
+        subscription: { create: { plan: "FREE", status: "ACTIVE" } },
+      },
+    });
+
+    console.log(`Created trader: ${trader.email}`);
+  } else {
+    console.log("Trader already exists, skipping.");
+  }
+
   // Default platform settings
   const defaultSettings = [
     { key: "withdrawal_fee_percent", value: 0.1 },
