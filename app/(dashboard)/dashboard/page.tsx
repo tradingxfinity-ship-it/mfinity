@@ -207,7 +207,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Welcome / starter balance popup */}
+      {/* Welcome popup */}
       {showWelcome && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
           <div className="relative w-full max-w-md bg-gradient-to-br from-[#13131F] to-[#0F0F1A] border border-white/10 rounded-2xl p-8 text-center overflow-hidden">
@@ -215,31 +215,21 @@ export default function DashboardPage() {
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-blue-500/30 to-purple-500/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <Sparkles size={28} className="text-white" />
               </div>
 
-              <h2 className="text-2xl font-bold text-white tracking-tight">Welcome to Mfinity!</h2>
-              <p className="text-gray-400 text-sm mt-2 leading-relaxed">
-                You have received
-              </p>
-
-              <div className="my-4 py-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-                <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                  $10,000
-                </p>
-                <p className="text-xs text-emerald-400/80 font-medium uppercase tracking-wider mt-1">Welcome Bonus</p>
-              </div>
-
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Use it to test our platform — open trades, track live P&amp;L, and explore everything risk-free.
+              <h2 className="text-2xl font-bold text-white tracking-tight">Welcome to Mfinity</h2>
+              <p className="text-gray-400 text-sm mt-3 leading-relaxed">
+                We&apos;re glad to have you on board. Explore live markets, build your
+                portfolio, and trade at the speed of light — your journey starts here.
               </p>
 
               <button
                 onClick={dismissWelcome}
                 className="mt-6 w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl py-3 text-sm font-bold hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/20"
               >
-                Start Trading
+                Begin Trading
               </button>
             </div>
           </div>
