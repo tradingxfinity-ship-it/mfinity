@@ -30,7 +30,7 @@ export const AuthService = {
         firstName: input.firstName,
         lastName: input.lastName,
         passwordHash,
-        portfolio: { create: { availableBalance: 10000, totalValue: 10000 } },
+        portfolio: { create: { availableBalance: 0, totalValue: 0 } },
         subscription: { create: { plan: "FREE" } },
       },
     });

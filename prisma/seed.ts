@@ -39,7 +39,7 @@ async function main() {
     console.log("Admin already exists, skipping.");
   }
 
-  // Test trader (paper-trading account with starter balance)
+  // Test trader (paper-trading account, zero starting balance)
   const traderEmail = process.env.TEST_TRADER_EMAIL ?? "trader@mfinity.trade";
   const traderPassword = process.env.TEST_TRADER_PASSWORD ?? "Trader@123456";
 
@@ -58,7 +58,7 @@ async function main() {
         status: "ACTIVE",
         emailVerified: new Date(),
         kycStatus: "APPROVED",
-        portfolio: { create: { availableBalance: 10000, totalValue: 10000 } },
+        portfolio: { create: { availableBalance: 0, totalValue: 0 } },
         subscription: { create: { plan: "FREE", status: "ACTIVE" } },
       },
     });
