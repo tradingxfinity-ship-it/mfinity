@@ -9,7 +9,7 @@ export const UserService = {
 
     const user = await db.user.findUnique({
       where: { id: userId },
-      include: { subscription: true },
+      include: { subscription: true, portfolio: true },
     });
 
     if (!user) return null;
@@ -26,10 +26,12 @@ export const UserService = {
       emailVerified: user.emailVerified,
       avatarUrl: user.avatarUrl,
       subscriptionPlan: user.subscription?.plan ?? "FREE",
+      availableBalance: Number(user.portfolio?.availableBalance ?? 0),
       createdAt: user.createdAt,
     };
 
-    await cacheSet(CacheKeys.userProfile(userId), profile, 300);
+    // Short TTL — balance moves with every trade/deposit/withdrawal.
+    await cacheSet(CacheKeys.userProfile(userId), profile, 30);
     return profile;
   },
 
@@ -40,7 +42,7 @@ export const UserService = {
     const user = await db.user.update({
       where: { id: userId },
       data,
-      include: { subscription: true },
+      include: { subscription: true, portfolio: true },
     });
 
     await cacheDel(CacheKeys.userProfile(userId));
@@ -57,6 +59,7 @@ export const UserService = {
       emailVerified: user.emailVerified,
       avatarUrl: user.avatarUrl,
       subscriptionPlan: user.subscription?.plan ?? "FREE",
+      availableBalance: Number(user.portfolio?.availableBalance ?? 0),
       createdAt: user.createdAt,
     };
   },

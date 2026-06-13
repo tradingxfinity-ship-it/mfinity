@@ -66,6 +66,7 @@ export interface AuthUser {
   emailVerified: Date | null;
   avatarUrl: string | null;
   subscriptionPlan: string;
+  availableBalance: number;
   createdAt: Date;
 }
 

@@ -224,6 +224,11 @@ function toAuthUser(
     emailVerified: user.emailVerified,
     avatarUrl: user.avatarUrl,
     subscriptionPlan: plan,
+    // Balance isn't returned by signup/login responses (the dashboard layout
+    // re-fetches it via /api/user/profile right after auth). Default to 0
+    // here to satisfy the AuthUser contract without an extra portfolio query
+    // on the hot path.
+    availableBalance: 0,
     createdAt: user.createdAt,
   };
 }

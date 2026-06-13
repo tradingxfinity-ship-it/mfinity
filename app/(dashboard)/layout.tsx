@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   Sparkles,
   Zap,
+  DollarSign,
 } from "lucide-react";
 
 const NAV_GROUPS = [
@@ -58,7 +59,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [user, setUser] = useState<{ firstName: string; lastName: string; email: string; subscriptionPlan: string } | null>(null);
+  const [user, setUser] = useState<{ firstName: string; lastName: string; email: string; subscriptionPlan: string; availableBalance: number } | null>(null);
 
   useEffect(() => {
     fetch("/api/user/notifications?unread=true")
@@ -171,6 +172,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {user.subscriptionPlan}
               </span>
             )}
+            <Link
+              href="/dashboard/portfolio"
+              className="flex items-center gap-1.5 text-xs font-semibold text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/15 transition-colors px-2.5 py-1.5 rounded-lg"
+              title="Available balance"
+            >
+              <DollarSign size={11} className="text-emerald-400" />
+              <span className="tabular-nums">
+                {(user?.availableBalance ?? 0).toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            </Link>
             <Link
               href="/dashboard/notifications"
               className="relative w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] transition-colors"
